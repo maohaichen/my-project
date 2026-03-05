@@ -1,0 +1,1122 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>报名收集系统</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        h1 {
+            text-align: center;
+            color: white;
+            margin-bottom: 30px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+        }
+
+        .card {
+            background: white;
+            border-radius: 16px;
+            padding: 30px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+            margin-bottom: 20px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #333;
+        }
+
+        label .required {
+            color: #e74c3c;
+            margin-left: 4px;
+        }
+
+        input {
+            width: 100%;
+            padding: 12px 16px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: border-color 0.3s, box-shadow 0.3s;
+        }
+
+        input:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.2);
+        }
+
+        input.error {
+            border-color: #e74c3c;
+        }
+
+        .error-message {
+            color: #e74c3c;
+            font-size: 14px;
+            margin-top: 4px;
+            display: none;
+        }
+
+        .btn {
+            padding: 14px 28px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+            margin-right: 10px;
+            margin-bottom: 10px;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+        }
+
+        .btn:active {
+            transform: translateY(0);
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .btn-secondary {
+            background: #f0f0f0;
+            color: #333;
+        }
+
+        .btn-success {
+            background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+            color: white;
+        }
+
+        .btn-danger {
+            background: linear-gradient(135deg, #eb3349 0%, #f45c43 100%);
+            color: white;
+        }
+
+        .btn-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .stats {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin-bottom: 20px;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 36px;
+            font-weight: bold;
+            color: #667eea;
+        }
+
+        .stat-label {
+            color: #666;
+            font-size: 14px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        th {
+            background: #f8f9fa;
+            font-weight: 600;
+            color: #333;
+        }
+
+        tr:hover {
+            background: #f8f9fa;
+        }
+
+        .no-data {
+            text-align: center;
+            color: #999;
+            padding: 40px;
+        }
+
+        .action-btn {
+            padding: 6px 12px;
+            font-size: 14px;
+            margin: 0;
+        }
+
+        .success-message {
+            background: #d4edda;
+            color: #155724;
+            padding: 12px 16px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            display: none;
+        }
+
+        .tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .tab {
+            padding: 10px 20px;
+            background: #f0f0f0;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background 0.3s;
+        }
+
+        .tab.active {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .search-box {
+            margin-bottom: 20px;
+        }
+
+        .search-box input {
+            background: #f8f9fa;
+        }
+
+        .time-slots {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .time-slot {
+            padding: 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            cursor: pointer;
+            text-align: center;
+            transition: all 0.3s;
+        }
+
+        .time-slot:hover {
+            border-color: #667eea;
+            background: #f8f9fa;
+        }
+
+        .time-slot.selected {
+            border-color: #667eea;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .time-slot.full {
+            border-color: #e74c3c;
+            background: #f8d7da;
+            color: #721c24;
+            cursor: not-allowed;
+        }
+
+        .time-slot .capacity {
+            font-size: 12px;
+            margin-top: 5px;
+            opacity: 0.8;
+        }
+
+        @media (max-width: 600px) {
+            .time-slots {
+                grid-template-columns: 1fr;
+            }
+
+            .stats {
+                flex-direction: column;
+                gap: 15px;
+            }
+
+            table {
+                font-size: 14px;
+            }
+
+            th, td {
+                padding: 8px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>报名收集系统</h1>
+
+        <div class="tabs">
+            <button class="tab active" onclick="switchTab('form')">报名登记</button>
+            <button class="tab" onclick="switchTab('list')">报名列表</button>
+        </div>
+
+        <div id="form-tab" class="tab-content active">
+            <div class="card">
+                <div class="success-message" id="success-message">
+                    报名成功！
+                </div>
+
+                <div class="form-group">
+                    <h3 style="color: #333; margin-bottom: 15px;">活动说明</h3>
+                    <div style="background: #f8f9fa; padding: 20px; border-radius: 8px; border-left: 4px solid #667eea;">
+                        <h4>活动规则：</h4>
+                        <ul style="margin: 10px 0 0 20px;">
+                            <li>每个时间段限报5人，先到先得</li>
+                            <li>报名成功后请准时参加活动</li>
+                            <li>如需取消报名，请联系工作人员</li>
+                            <li>活动最终解释权归主办方所有</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <form id="registration-form">
+                    <div class="form-group">
+                        <label>公司<span class="required">*</span></label>
+                        <input type="text" id="company" placeholder="请输入公司名称" required>
+                        <div class="error-message" id="company-error">请输入公司名称</div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>部门<span class="required">*</span></label>
+                        <input type="text" id="department" placeholder="请输入部门名称" required>
+                        <div class="error-message" id="department-error">请输入部门名称</div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>姓名<span class="required">*</span></label>
+                        <input type="text" id="name" placeholder="请输入姓名" required>
+                        <div class="error-message" id="name-error">请输入姓名</div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>联系方式<span class="required">*</span></label>
+                        <input type="tel" id="phone" placeholder="请输入手机号码" required>
+                        <div class="error-message" id="phone-error">请输入正确的手机号码</div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>时间段<span class="required">*</span></label>
+                        <div class="time-slots" id="time-slots">
+                            <div class="time-slot" data-time="10:00-11:00">
+                                10:00-11:00
+                                <div class="capacity">剩余: <span class="count">5</span>/5</div>
+                            </div>
+                            <div class="time-slot" data-time="11:00-12:00">
+                                11:00-12:00
+                                <div class="capacity">剩余: <span class="count">5</span>/5</div>
+                            </div>
+                            <div class="time-slot" data-time="13:00-14:00">
+                                13:00-14:00
+                                <div class="capacity">剩余: <span class="count">5</span>/5</div>
+                            </div>
+                            <div class="time-slot" data-time="14:00-15:00">
+                                14:00-15:00
+                                <div class="capacity">剩余: <span class="count">5</span>/5</div>
+                            </div>
+                            <div class="time-slot" data-time="15:00-16:00">
+                                15:00-16:00
+                                <div class="capacity">剩余: <span class="count">5</span>/5</div>
+                            </div>
+                            <div class="time-slot" data-time="16:00-17:00">
+                                16:00-17:00
+                                <div class="capacity">剩余: <span class="count">5</span>/5</div>
+                            </div>
+                            <div class="time-slot" data-time="17:00-18:00">
+                                17:00-18:00
+                                <div class="capacity">剩余: <span class="count">5</span>/5</div>
+                            </div>
+                        </div>
+                        <div class="error-message" id="time-error">请选择时间段</div>
+                    </div>
+
+                    <div class="btn-group">
+                        <button type="submit" class="btn btn-primary">提交报名</button>
+                        <button type="button" class="btn btn-secondary" onclick="clearForm()">清空表单</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <div id="list-tab" class="tab-content">
+            <div class="card">
+                <div class="stats">
+                    <div class="stat-item">
+                        <div class="stat-number" id="total-count">0</div>
+                        <div class="stat-label">总报名人数</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-number" id="company-count">0</div>
+                        <div class="stat-label">公司数量</div>
+                    </div>
+                </div>
+
+                <div class="search-box">
+                    <input type="text" id="search" placeholder="搜索公司、部门、姓名或联系方式..." oninput="renderTable()">
+                </div>
+
+                <div class="btn-group">
+                    <button class="btn btn-success" onclick="exportJSON()">导出 JSON</button>
+                    <button class="btn btn-secondary" onclick="exportCSV()">导出 CSV</button>
+                    <button class="btn btn-danger" onclick="clearAllData()">清空所有数据</button>
+                </div>
+
+                <table id="data-table">
+                    <thead>
+                        <tr>
+                            <th>序号</th>
+                            <th>公司</th>
+                            <th>部门</th>
+                            <th>姓名</th>
+                            <th>联系方式</th>
+                            <th>时间段</th>
+                            <th>报名时间</th>
+                            <th>操作</th>
+                        </tr>
+                    </thead>
+                    <tbody id="table-body">
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        var STORAGE_KEY = 'registration_data';
+        var TIME_SLOTS = ['10:00-11:00', '11:00-12:00', '13:00-14:00', '14:00-15:00', '15:00-16:00', '16:00-17:00', '17:00-18:00'];
+        var MAX_CAPACITY = 5;
+        var memoryData = [];
+        var API_BASE_URL = 'http://172.1.1.7:3000/api/registrations';
+        var ADMIN_IP = '172.1.1.7';
+        var ADMIN_PASSWORD = '000000';
+        var isAdmin = false;
+
+        function getData() {
+            try {
+                var data = localStorage.getItem(STORAGE_KEY);
+                var parsedData = data ? JSON.parse(data) : [];
+                memoryData = parsedData;
+                return parsedData;
+            } catch (e) {
+                console.log('localStorage error:', e);
+                return memoryData;
+            }
+        }
+
+        function saveData(data) {
+            try {
+                localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+                memoryData = data;
+            } catch (e) {
+                console.log('localStorage error:', e);
+                memoryData = data;
+            }
+        }
+
+        function apiRequest(url, options) {
+            return new Promise(function(resolve, reject) {
+                var xhr = new XMLHttpRequest();
+                xhr.open(options.method || 'GET', url);
+                xhr.setRequestHeader('Content-Type', 'application/json; charset=utf-8');
+                xhr.onload = function() {
+                    if (xhr.status >= 200 && xhr.status < 300) {
+                        resolve(JSON.parse(xhr.responseText));
+                    } else {
+                        reject({ status: xhr.status, message: xhr.responseText });
+                    }
+                };
+                xhr.onerror = function() {
+                    reject({ status: 0, message: '网络错误' });
+                };
+                if (options.body) {
+                    xhr.send(JSON.stringify(options.body));
+                } else {
+                    xhr.send();
+                }
+            });
+        }
+
+        function getClientIP() {
+            return new Promise(function(resolve, reject) {
+                // 使用第三方服务获取IP地址
+                var xhr = new XMLHttpRequest();
+                xhr.open('GET', 'https://api.ipify.org?format=json');
+                xhr.onload = function() {
+                    if (xhr.status >= 200 && xhr.status < 300) {
+                        var response = JSON.parse(xhr.responseText);
+                        resolve(response.ip);
+                    } else {
+                        // 如果第三方服务失败，尝试从后端API获取
+                        apiRequest(API_BASE_URL)
+                            .then(function() {
+                                // 从请求头中获取IP（需要后端支持）
+                                resolve('172.1.1.7'); // 暂时返回默认值
+                            })
+                            .catch(function() {
+                                resolve('unknown');
+                            });
+                    }
+                };
+                xhr.onerror = function() {
+                    resolve('unknown');
+                };
+                xhr.send();
+            });
+        }
+
+        function checkAdminAccess() {
+            return getClientIP()
+                .then(function(ip) {
+                    console.log('客户端IP:', ip);
+                    if (ip === ADMIN_IP) {
+                        isAdmin = true;
+                        return true;
+                    } else {
+                        // 非管理员IP，提示输入密码
+                        var password = prompt('请输入管理员密码：');
+                        if (password === ADMIN_PASSWORD) {
+                            isAdmin = true;
+                            return true;
+                        } else {
+                            isAdmin = false;
+                            return false;
+                        }
+                    }
+                })
+                .catch(function() {
+                    // 获取IP失败，提示输入密码
+                    var password = prompt('请输入管理员密码：');
+                    if (password === ADMIN_PASSWORD) {
+                        isAdmin = true;
+                        return true;
+                    } else {
+                        isAdmin = false;
+                        return false;
+                    }
+                });
+        }
+
+        function ensureAdminAccess() {
+            return new Promise(function(resolve) {
+                if (isAdmin) {
+                    resolve(true);
+                } else {
+                    checkAdminAccess()
+                        .then(function(hasAccess) {
+                            if (hasAccess) {
+                                resolve(true);
+                            } else {
+                                alert('权限不足，无法执行此操作');
+                                resolve(false);
+                            }
+                        });
+                }
+            });
+        }
+
+        function generateId() {
+            return Date.now().toString(36) + Math.random().toString(36).substr(2);
+        }
+
+        function getTimeSlotCount(time) {
+            // 先从本地获取作为缓存
+            var data = getData();
+            var count = 0;
+            for (var i = 0; i < data.length; i++) {
+                if (data[i].time === time) {
+                    count++;
+                }
+            }
+            return count;
+        }
+
+        function getTimeSlotCountFromServer(time) {
+            return apiRequest(API_BASE_URL + '/time/' + encodeURIComponent(time))
+                .then(function(response) {
+                    return response.count;
+                })
+                .catch(function(error) {
+                    console.log('获取时间段人数失败:', error);
+                    return 0;
+                });
+        }
+
+        function updateTimeSlotStatus() {
+            var timeSlots = document.querySelectorAll('.time-slot');
+            for (var i = 0; i < timeSlots.length; i++) {
+                (function(slot) {
+                    var time = slot.getAttribute('data-time');
+                    getTimeSlotCountFromServer(time)
+                        .then(function(count) {
+                            var remaining = MAX_CAPACITY - count;
+                            slot.querySelector('.count').textContent = remaining;
+                            
+                            if (remaining <= 0) {
+                                slot.classList.add('full');
+                                slot.classList.remove('selected');
+                            } else {
+                                slot.classList.remove('full');
+                            }
+                        })
+                        .catch(function() {
+                            // 如果服务器请求失败，使用本地数据
+                            var count = getTimeSlotCount(time);
+                            var remaining = MAX_CAPACITY - count;
+                            slot.querySelector('.count').textContent = remaining;
+                            
+                            if (remaining <= 0) {
+                                slot.classList.add('full');
+                                slot.classList.remove('selected');
+                            } else {
+                                slot.classList.remove('full');
+                            }
+                        });
+                })(timeSlots[i]);
+            }
+        }
+
+        function validateForm() {
+            var isValid = true;
+            var company = document.getElementById('company');
+            var department = document.getElementById('department');
+            var name = document.getElementById('name');
+            var phone = document.getElementById('phone');
+            var selectedTimeSlot = document.querySelector('.time-slot.selected');
+
+            if (!company.value.trim()) {
+                company.classList.add('error');
+                document.getElementById('company-error').style.display = 'block';
+                isValid = false;
+            } else {
+                company.classList.remove('error');
+                document.getElementById('company-error').style.display = 'none';
+            }
+
+            if (!department.value.trim()) {
+                department.classList.add('error');
+                document.getElementById('department-error').style.display = 'block';
+                isValid = false;
+            } else {
+                department.classList.remove('error');
+                document.getElementById('department-error').style.display = 'none';
+            }
+
+            if (!name.value.trim()) {
+                name.classList.add('error');
+                document.getElementById('name-error').style.display = 'block';
+                isValid = false;
+            } else {
+                name.classList.remove('error');
+                document.getElementById('name-error').style.display = 'none';
+            }
+
+            var phoneRegex = /^1[3-9]\d{9}$/;
+            if (!phoneRegex.test(phone.value.trim())) {
+                phone.classList.add('error');
+                document.getElementById('phone-error').style.display = 'block';
+                isValid = false;
+            } else {
+                phone.classList.remove('error');
+                document.getElementById('phone-error').style.display = 'none';
+            }
+
+            if (!selectedTimeSlot) {
+                document.getElementById('time-error').style.display = 'block';
+                isValid = false;
+            } else {
+                document.getElementById('time-error').style.display = 'none';
+            }
+
+            return isValid;
+        }
+
+        function handleTimeSlotClick(slot, timeSlots) {
+            if (slot.classList.contains('full')) {
+                alert('该时间段报名人数已满！');
+                return;
+            }
+            
+            for (var i = 0; i < timeSlots.length; i++) {
+                timeSlots[i].classList.remove('selected');
+            }
+            slot.classList.add('selected');
+            document.getElementById('time-error').style.display = 'none';
+        }
+
+        function handleFormSubmit(e) {
+            e.preventDefault();
+
+            if (!validateForm()) {
+                return;
+            }
+
+            var selectedTimeSlot = document.querySelector('.time-slot.selected');
+            var time = selectedTimeSlot.getAttribute('data-time');
+            
+            console.log('开始提交报名数据');
+            console.log('选择的时间段:', time);
+            console.log('API_BASE_URL:', API_BASE_URL);
+            
+            // 检查服务器上的时间段人数
+            getTimeSlotCountFromServer(time)
+                .then(function(count) {
+                    console.log('服务器上该时间段的人数:', count);
+                    if (count >= MAX_CAPACITY) {
+                        alert('该时间段报名人数已满！');
+                        return;
+                    }
+
+                    var company = document.getElementById('company').value.trim();
+                    var department = document.getElementById('department').value.trim();
+                    var name = document.getElementById('name').value.trim();
+                    var phone = document.getElementById('phone').value.trim();
+
+                    console.log('报名数据:', { company, department, name, phone, time });
+
+                    // 准备数据
+                    var newEntry = {
+                        id: generateId(),
+                        company: company,
+                        department: department,
+                        name: name,
+                        phone: phone,
+                        time: time,
+                        timestamp: new Date().toISOString()
+                    };
+
+                    // 先保存到本地
+                    var data = getData();
+                    data.push(newEntry);
+                    saveData(data);
+                    console.log('数据已保存到本地');
+
+                    // 发送到服务器
+                    console.log('开始发送数据到服务器:', API_BASE_URL);
+                    return apiRequest(API_BASE_URL, {
+                        method: 'POST',
+                        body: {
+                            company: company,
+                            department: department,
+                            name: name,
+                            phone: phone,
+                            time: time
+                        }
+                    });
+                })
+                .then(function(response) {
+                    console.log('服务器响应:', response);
+                    var successMsg = document.getElementById('success-message');
+                    successMsg.style.display = 'block';
+                    setTimeout(function() {
+                        successMsg.style.display = 'none';
+                    }, 2000);
+
+                    clearForm();
+                    updateTimeSlotStatus();
+                    updateStats();
+                })
+                .catch(function(error) {
+                    console.error('提交失败:', error);
+                    alert('提交到服务器失败，请检查网络连接后重试');
+                    // 即使服务器提交失败，也显示成功（使用本地存储）
+                    var successMsg = document.getElementById('success-message');
+                    successMsg.style.display = 'block';
+                    setTimeout(function() {
+                        successMsg.style.display = 'none';
+                    }, 2000);
+
+                    clearForm();
+                    updateTimeSlotStatus();
+                    updateStats();
+                });
+        }
+
+        function clearForm() {
+            document.getElementById('company').value = '';
+            document.getElementById('department').value = '';
+            document.getElementById('name').value = '';
+            document.getElementById('phone').value = '';
+            
+            var timeSlots = document.querySelectorAll('.time-slot');
+            for (var i = 0; i < timeSlots.length; i++) {
+                timeSlots[i].classList.remove('selected');
+            }
+
+            var inputs = document.querySelectorAll('input');
+            for (var i = 0; i < inputs.length; i++) {
+                inputs[i].classList.remove('error');
+            }
+            var errorMessages = document.querySelectorAll('.error-message');
+            for (var i = 0; i < errorMessages.length; i++) {
+                errorMessages[i].style.display = 'none';
+            }
+        }
+
+        function switchTab(tab) {
+            var tabs = document.querySelectorAll('.tab');
+            for (var i = 0; i < tabs.length; i++) {
+                tabs[i].classList.remove('active');
+            }
+            var tabContents = document.querySelectorAll('.tab-content');
+            for (var i = 0; i < tabContents.length; i++) {
+                tabContents[i].classList.remove('active');
+            }
+
+            if (tab === 'form') {
+                tabs[0].classList.add('active');
+                document.getElementById('form-tab').classList.add('active');
+                updateTimeSlotStatus();
+            } else {
+                // 访问报名列表需要管理员权限
+                ensureAdminAccess()
+                    .then(function(hasAccess) {
+                        if (hasAccess) {
+                            tabs[1].classList.add('active');
+                            document.getElementById('list-tab').classList.add('active');
+                            renderTable();
+                            updateStats();
+                        } else {
+                            // 权限不足，切换回报名登记页面
+                            tabs[0].classList.add('active');
+                            document.getElementById('form-tab').classList.add('active');
+                            updateTimeSlotStatus();
+                        }
+                    });
+            }
+        }
+
+        function renderTable() {
+            var data = getData();
+            var searchTerm = document.getElementById('search').value.toLowerCase();
+            var tbody = document.getElementById('table-body');
+
+            var filteredData = [];
+            for (var i = 0; i < data.length; i++) {
+                var item = data[i];
+                if (item.company.toLowerCase().indexOf(searchTerm) !== -1 ||
+                    item.department.toLowerCase().indexOf(searchTerm) !== -1 ||
+                    item.name.toLowerCase().indexOf(searchTerm) !== -1 ||
+                    item.phone.indexOf(searchTerm) !== -1 ||
+                    (item.time && item.time.toLowerCase().indexOf(searchTerm) !== -1)) {
+                    filteredData.push(item);
+                }
+            }
+
+            if (filteredData.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="8" class="no-data">暂无报名数据</td></tr>';
+                return;
+            }
+
+            var html = '';
+            for (var i = 0; i < filteredData.length; i++) {
+                var item = filteredData[i];
+                html += '<tr>';
+                html += '<td>' + (i + 1) + '</td>';
+                html += '<td>' + escapeHtml(item.company) + '</td>';
+                html += '<td>' + escapeHtml(item.department) + '</td>';
+                html += '<td>' + escapeHtml(item.name) + '</td>';
+                html += '<td>' + escapeHtml(item.phone) + '</td>';
+                html += '<td>' + escapeHtml(item.time || '') + '</td>';
+                html += '<td>' + formatDate(item.timestamp) + '</td>';
+                html += '<td><button class="btn btn-danger action-btn" onclick="deleteEntry(\'' + item.id + '\')">删除</button></td>';
+                html += '</tr>';
+            }
+            tbody.innerHTML = html;
+        }
+
+        function escapeHtml(text) {
+            var div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        function formatDate(isoString) {
+            var date = new Date(isoString);
+            var year = date.getFullYear();
+            var month = (date.getMonth() + 1).toString().padStart(2, '0');
+            var day = date.getDate().toString().padStart(2, '0');
+            var hour = date.getHours().toString().padStart(2, '0');
+            var minute = date.getMinutes().toString().padStart(2, '0');
+            return year + '-' + month + '-' + day + ' ' + hour + ':' + minute;
+        }
+
+        function updateStats() {
+            // 从服务器获取统计数据
+            apiRequest(API_BASE_URL + '/count')
+                .then(function(response) {
+                    document.getElementById('total-count').textContent = response.totalCount;
+                    document.getElementById('company-count').textContent = response.companyCount;
+                })
+                .catch(function(error) {
+                    console.log('获取统计数据失败:', error);
+                    // 如果服务器请求失败，使用本地数据
+                    var data = getData();
+                    document.getElementById('total-count').textContent = data.length;
+
+                    var companies = {};
+                    for (var i = 0; i < data.length; i++) {
+                        companies[data[i].company] = true;
+                    }
+                    var companyCount = 0;
+                    for (var key in companies) {
+                        if (companies.hasOwnProperty(key)) {
+                            companyCount++;
+                        }
+                    }
+                    document.getElementById('company-count').textContent = companyCount;
+                });
+        }
+
+        function loadDataFromServer() {
+            apiRequest(API_BASE_URL)
+                .then(function(data) {
+                    // 将服务器数据保存到本地
+                    var localData = data.map(function(item) {
+                        return {
+                            id: item._id || generateId(),
+                            company: item.company,
+                            department: item.department,
+                            name: item.name,
+                            phone: item.phone,
+                            time: item.time,
+                            timestamp: item.createdAt || new Date().toISOString()
+                        };
+                    });
+                    saveData(localData);
+                    renderTable();
+                    updateStats();
+                    updateTimeSlotStatus();
+                })
+                .catch(function(error) {
+                    console.log('加载服务器数据失败:', error);
+                });
+        }
+
+        function deleteEntry(id) {
+            ensureAdminAccess()
+                .then(function(hasAccess) {
+                    if (hasAccess) {
+                        if (!confirm('确定要删除这条报名记录吗？')) {
+                            return;
+                        }
+
+                        // 先删除本地数据
+                        var data = getData();
+                        var newData = [];
+                        for (var i = 0; i < data.length; i++) {
+                            if (data[i].id !== id) {
+                                newData.push(data[i]);
+                            }
+                        }
+                        saveData(newData);
+
+                        // 从服务器删除
+                        apiRequest(API_BASE_URL + '/' + id, {
+                            method: 'DELETE'
+                        })
+                        .then(function() {
+                            console.log('删除成功');
+                        })
+                        .catch(function(error) {
+                            console.log('删除失败:', error);
+                        });
+
+                        renderTable();
+                        updateStats();
+                        updateTimeSlotStatus();
+                    }
+                });
+        }
+
+        function clearAllData() {
+            ensureAdminAccess()
+                .then(function(hasAccess) {
+                    if (hasAccess) {
+                        if (!confirm('确定要清空所有报名数据吗？此操作不可恢复！')) {
+                            return;
+                        }
+
+                        // 先清空本地数据
+                        try {
+                            localStorage.removeItem(STORAGE_KEY);
+                        } catch (e) {
+                            console.log('localStorage error:', e);
+                        }
+                        memoryData = [];
+
+                        // 清空服务器数据
+                        apiRequest(API_BASE_URL, {
+                            method: 'DELETE'
+                        })
+                        .then(function() {
+                            console.log('服务器数据已清空');
+                        })
+                        .catch(function(error) {
+                            console.log('清空服务器数据失败:', error);
+                        });
+
+                        renderTable();
+                        updateStats();
+                        updateTimeSlotStatus();
+                        alert('数据已清空');
+                    }
+                });
+        }
+
+        function exportJSON() {
+            ensureAdminAccess()
+                .then(function(hasAccess) {
+                    if (hasAccess) {
+                        var data = getData();
+                        if (data.length === 0) {
+                            alert('暂无数据可导出');
+                            return;
+                        }
+
+                        var jsonStr = JSON.stringify(data, null, 2);
+                        downloadFile(jsonStr, '报名数据.json', 'application/json');
+                    }
+                });
+        }
+
+        function exportCSV() {
+            ensureAdminAccess()
+                .then(function(hasAccess) {
+                    if (hasAccess) {
+                        var data = getData();
+                        if (data.length === 0) {
+                            alert('暂无数据可导出');
+                            return;
+                        }
+
+                        var headers = ['序号', '公司', '部门', '姓名', '联系方式', '时间段', '报名时间'];
+                        var rows = [];
+                        for (var i = 0; i < data.length; i++) {
+                            var item = data[i];
+                            rows.push([
+                                i + 1,
+                                item.company,
+                                item.department,
+                                item.name,
+                                item.phone,
+                                item.time || '',
+                                formatDate(item.timestamp)
+                            ]);
+                        }
+
+                        var csvContent = '\uFEFF';
+                        csvContent += headers.join(',') + '\n';
+                        for (var i = 0; i < rows.length; i++) {
+                            var row = rows[i];
+                            var csvRow = [];
+                            for (var j = 0; j < row.length; j++) {
+                                var cell = row[j];
+                                csvRow.push('"' + String(cell).replace(/"/g, '""') + '"');
+                            }
+                            csvContent += csvRow.join(',') + '\n';
+                        }
+
+                        downloadFile(csvContent, '报名数据.csv', 'text/csv;charset=utf-8');
+                    }
+                });
+        }
+
+        function downloadFile(content, filename, mimeType) {
+            try {
+                var blob = new Blob([content], { type: mimeType });
+                var url = URL.createObjectURL(blob);
+                var a = document.createElement('a');
+                a.href = url;
+                a.download = filename;
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                URL.revokeObjectURL(url);
+            } catch (e) {
+                console.log('Download error:', e);
+                alert('导出失败，请稍后重试');
+            }
+        }
+
+        function init() {
+            try {
+                var timeSlots = document.querySelectorAll('.time-slot');
+                for (var i = 0; i < timeSlots.length; i++) {
+                    (function(slot) {
+                        slot.addEventListener('click', function() {
+                            handleTimeSlotClick(slot, timeSlots);
+                        });
+                    })(timeSlots[i]);
+                }
+                
+                var form = document.getElementById('registration-form');
+                if (form) {
+                    form.addEventListener('submit', handleFormSubmit);
+                }
+                
+                // 从服务器加载数据
+                loadDataFromServer();
+            } catch (e) {
+                console.log('Init error:', e);
+                // 发生错误时，使用本地数据
+                updateTimeSlotStatus();
+                updateStats();
+            }
+        }
+
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', init);
+        } else {
+            init();
+        }
+    </script>
+</body>
+</html>
